@@ -4,13 +4,12 @@
 # # email 1dwayne.mcdaniel @ gmail.com
 # # website https://mcdwayne.com
 # # github https://github.com/mcdwayne/ 
-# # license: MIT License, http://www.opensource.org/licenses/MIT
+# # license: MIT License, https://github.com/mcdwayne/yeOleTerminusQuest/blob/master/LICENSE
 # no
 # Version 1.0
 # All commands Tested against:  
-# 	Terminus v2.0,
-# 	PHP 7.2.9 
-#	
+# 	Terminus v2.0, 
+#	PHP 7.2.9
 
 
 # DESCRIPTION
@@ -180,6 +179,13 @@ global $terminusCommandValue;
  ///                       ////////////////////////////////
 ///////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////
+  ///                                //////////////////////
+  //   Non Player Characters - NPC   //////////////////////
+ ///                                 //////////////////////
+///////////////////////////////////////////////////////////
+
+
 //
 // THE WIZARD Function
 //
@@ -190,7 +196,7 @@ global $terminusCommandValue;
 	switch ($level) {
 		case '0':
 			cls();
-			print("The Wizard looks at you and says\n\"Welcome YOURNAME.  I am the Wizard.\n\nYou are here because the evil Lord GUI has stolen all the Terminus art for himself.  I am busy with the Fires of Clients and can not leave this terminal.\n\nYour mission, if you choose to accept it, will be to gather all the art files back together. Along the way you will need to use the mystical spells of Terminus.\n\nFortunately, I can give you help as you go. Simply return after you find a piece of art or if anyone or anything tells you that you need to.\n\nYou need to travel South to start your quest.\n\nGood luck\"\n\nAnd with that, the Wizard turns to his terminal, sees slack alerts piling up and grumbles under his breath....\n\n");
+			print("The Wizard looks at you and says\n\"Welcome YOURNAME.  I am the Wizard.\n\nYou are here because the evil Lord GUI has stolen all the Terminus art for himself.  I am busy with the Fires of Clients and can not leave this terminal.\n\nYour mission, if you choose to accept it, will be to gather all the art files back together. Along the way you will need to use the mystical spells of Terminus.\n\nFortunately, I can give you help as you go. Simply return after you find a piece of art or if anyone or anything tells you that you need to.\n\nYou need to travel South to start your quest.\n\nGood luck\"\n\nAnd with that, the Wizard turns to his terminal, sees Slack and IRC alerts piling up and grumbles under his breath....\n\n");
 			$theUser->promoteLevel();
 			break;
 		case '1':
@@ -218,7 +224,7 @@ global $terminusCommandValue;
 
 		case '4':
 			cls();
-			print("What are you waiting for?  I have stuff to do. Try help if you get stuck");
+			print("What are you waiting for?  I have stuff to do. Try `help` if you get stuck.\n\n");
 			break;
 		default:
 			print("This option is not set yet\n\n");
@@ -227,10 +233,15 @@ global $terminusCommandValue;
      }
  
 
-/*
-TRMNSCMDS
- Standard commands across all rooms
-*/
+
+
+///////////////////////////////////////////////////////////
+  ///                                 /////////////////////
+  //   Terminus Commands - TRMNSCMDS  /////////////////////
+ ///                                  /////////////////////
+///////////////////////////////////////////////////////////
+
+
 function tryTerminusCommand($attemptedCommand, $roomThisCameFrom){ //1
 		global $theUser;
 
@@ -284,10 +295,12 @@ function tryTerminusCommand($attemptedCommand, $roomThisCameFrom){ //1
    		return "\nI don't think that is a correct command\n\n" ;
 	} 
 
-/*
-CMDS
- Standard commands across all rooms
-*/
+///////////////////////////////////////////////////////////
+  ///                                 /////////////////////
+  //   Standard Commands - CMDS       /////////////////////
+ ///                                  /////////////////////
+///////////////////////////////////////////////////////////
+
 
 	function getTheCommand($roomThisCameFrom){
 		global $theUser;
@@ -310,20 +323,13 @@ CMDS
 
 		switch ($userinput) {
 			//standard commands
-			   case 'look':
-			   	   	cls();
-			       	print($roomDescriptions[$roomNumber]."\n\n") ;
-				break;
+			case 'look':
 			case 'l' :
-				   	cls();
-			       	print($roomDescriptions[$roomNumber]."\n\n") ;
-				break;
-			case 'quit':
-			    exit('Thanks for playing!'."\n");
-			    break;
+			   	cls();
+			    print($roomDescriptions[$roomNumber]."\n\n") ;
+					break;
 			case 'exit' :
-			    exit('Thanks for playing!'."\n");
-			   	break;
+			case 'quit':
 			case 'q' :
 			    exit('Thanks for playing!'."\n");
 			    break;
@@ -335,13 +341,28 @@ CMDS
 			   	print("\nTalk to who?\n\n");
 			    break;
 			case 'help':
+			case 'h':
 				cls();
 				print("There are standard commands, you can always do some of them.  Here is a short list:"
 					."\nLook or l - look around the room.  To look at a thing, look at the thing"
 					."\nquit or q or exit"
-					."\ninventory - show "
+					."\ninventory or in - show what you have in your inventory"
 					."\ntalk - only works if there is someone to talk to"
-					."\nhelp - this is how you got here\n");
+					."\nhelp or h - this is how you got here"
+					."\nTo move a direction you can type north, south, east or west or just n,s,e,w\n\n");
+					break;
+			case 'savepoint1':
+				$theUser->promoteLevel();
+				$theUser->promoteLevel();
+				$theUser->promoteLevel();
+				$theUser->promoteLevel();
+				$theUser->addToInventory('PantheonMachineToken');
+				$theUser->addToInventory('terminus-art-hello-world.txt');
+				$theUser->authenticateUser();
+				break;
+			case 'terminus':
+				break;
+				//ADMIN TOOLS				
 			case "print level":
 			case 'pl':
 				$theUser->printLevel();
@@ -361,21 +382,10 @@ CMDS
 				$theUser->addToInventory('PantheonMachineToken');
 				$theUser->authenticateUser();
 				break;
-			case 'savepoint1':
-				$theUser->promoteLevel();
-				$theUser->promoteLevel();
-				$theUser->promoteLevel();
-				$theUser->promoteLevel();
-				$theUser->addToInventory('PantheonMachineToken');
-				$theUser->addToInventory('terminus-art-hello-world.txt');
-				$theUser->authenticateUser();
-				break;
-			case 'terminus':
-				break;
 			default:
 				return $userinput ;
  	  			}
- 	    		return "done";
+ 	    		return "done";  //this was the cleanest way I could think of to handle Terminus calls.  
     }
 
 ///////////////////////////////////////////////
