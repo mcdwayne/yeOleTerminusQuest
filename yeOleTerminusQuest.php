@@ -282,18 +282,22 @@ function tryTerminusCommand($attemptedCommand, $roomThisCameFrom){ //1
   		        		}  		   	
  		 	} 
 
- 			if($attemptedCommand == "terminus auth:whoami" ) {
-  				    		return "\nyour@email.com\n\n";
-  		    		} 
+ 		if($attemptedCommand == "terminus auth:whoami" ) {
+  				if ( $theUser->checkUserAuth() ) {
+  				    return "\nyour@email.com\n\n";
+  		    	} else{
+  		    		return "\nYou can not yet do this spell\n";
+  		    	}
 
    		}
-   		if ($theUser->getLevel() > 2 ) {
-   			if($attemptedCommand == "terminus art") {
+   		if ($attemptedCommand == "terminus art") {
+   			if ($theUser->getLevel() > 2 ) {
   				   return "hello world!\n\n";
   			}
-   		}
+  		}
+   	}
    		return "\nI don't think that is a correct command\n\n" ;
-	} 
+} 
 
 ///////////////////////////////////////////////////////////
   ///                                 /////////////////////
