@@ -72,17 +72,18 @@ global $terminusCommandValue;
  $roomTitle = array();
 
 // Room 1
-    $roomDescriptions[1] = "The First room. It is dark and smells like stale coffee.\nThere is a Wizard in the corner hunched over a glowing terminal grumbling to himself.\nThere is a door to the South";
+    $roomDescriptions[1] = "The First room. It is dark and smells like stale coffee.\n\nThere is a Wizard in the corner hunched over a glowing terminal grumbling to himself.\n\nThere is an exit to the South";
     $roomTitle[1] = "You are in The First room.";
 // Room 2
-    $roomDescriptions[2] = "You are now in the Mirror Room.\nThere is a hazy mirror with a plaque beside it.\nThere are doors to the North, East and West" ;
+    $roomDescriptions[2] = "You are now in the Mirror Room.\nThere is a hazy mirror with a plaque beside it.\n\nThere are exits to the North, East and West" ;
     $roomTitle[2] = "\nYou are in the Mirror Room.\n\n";
 // Room 3
-    $roomDescriptions[3] = "You are now in the Authentication room.\nThere is a desk with a robot behind it.\nThere is a door to the West" ;
-    $roomTitle[3] = "\nYou are now in the Authentication room.\n\n";
+    $roomDescriptions[3] = "You are now in the Authentication room.\n\nThere is a desk with a robot behind it.\n\nThere is an exit to the West" ;
+    $roomTitle[3] = "\nYou are in the Authentication room.\n\n";
 // Room 4
-    $roomDescriptions[4] = "NOT DEFINED YET";
-    $roomTitle[4] = "The Not Defined Yet Room";
+    $roomDescriptions[4] = "You are now in The Cowgirl's Campsite\n\nThere is a cowgirl with a 10 gallon hat, chaps and spurs sitting beside a roaring camp fire. She is casting a lasso out into the darkness beyond the edge of the camp fire light.\n\nThere are exits to the West and North\n\n";
+    $roomTitle[4] = "You are in The Cowgirl's Campsite";
+
 
 ///////////////////////////////////////////////////////////
   ///                       ///////////////////////////////
@@ -99,10 +100,12 @@ global $terminusCommandValue;
 	public $authenticated = false; // Am I logged into Terminus with my email and my machine token?
 	public $level = 0; // Easy way to tell the game what you can and can't do yet and what the Wizard says
 	public $inventory = array(); //associative array
+	public $siteListArray = array(); //associative array
 	public $authMachine = false;
 	public $authEmail = false;
-/*
 
+/*
+Print The USer's Name
 */
     public function printName()
     {
@@ -172,6 +175,33 @@ global $terminusCommandValue;
     }
      return false;
   }
+/*
+ siteListArray stuff
+*/
+
+    public function showSiteList(){
+    	cls();
+    	print("Current Site List:\n");
+    	foreach( $this->siteListArray as $x => $x_value) {
+  		print($x . "\n");
+  		}
+  		print("\n\n");
+  		return;
+     }
+
+    public function addToSiteListArray($site){
+    	$this->siteListArray[$item] = $site;
+    	return;
+    }
+
+    public function isThisSiteInTheSiteListArray($doWeHaveIt){
+    	foreach( $this->siteListArray as $x => $x_value) {
+  			if ( $x == $doWeHaveIt ){
+  				return true;
+  			} 
+   		 }
+     	return false;
+ 	}  
 }
 ///////////////////////////////////////////////////////////
   ///                      ////////////////////////////////
@@ -223,6 +253,10 @@ global $terminusCommandValue;
 			break;
 
 		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
 			cls();
 			print("What are you waiting for?  I have stuff to do. Try `help` if you get stuck.\n\n");
 			break;
@@ -232,6 +266,31 @@ global $terminusCommandValue;
 	   	}	
      }
  
+
+//
+// THE Cowgirl Function
+//
+
+  function cowgirl($level) {
+  	global $theUser;
+
+// note: Lowest level you can be for getting to this room is 4 
+	switch ($level) {
+		case '4':
+			cls();
+			print("The Cowgirl looks at you, ties off her lasso to the log she has been sitting on and says\n\"Well howdy! You must be YOURNAME.  The Wizard told me you would be coming this way soon enough.  People round these parts call me The Cowgirl.\n\nI sure to appreciate anyone brave enough to try and get back all the Terminus art from that measly so-and-so Lord GUI.  I'd love to sock him right in the face, but I am too busy managing all them client sites to go adventuring myself.\n\nThe Wizard said I was supposed to teach you how to manage Sites and I would be happy to, but I reckon you didn't bring any sites with ya and I don't suppose you have a lasso yet either.\n\nWell, here's my spare lasso, so that is easy solved.\n\nAs far as the other thing, I know up North of here there is a good little site in The Pasture you could lasso. Once you lasso a site it is added to your Site List, which you can see now by running `terminus site:list`\"\n\nThe fire turns a bright red and flares up high into the stary sky.\n\nThe Cowgirl looks at the fire and grabs her lasso once more as she says \"Gosh darn it, the Fires of Clients are really raging tonight.  Go lasso that Site and hopefully it will be a bit more peaceful like when you get back. Happy trails partner.\"\n\n\nYou now have a Lasso\n\n");
+			$theUser->promoteLevel();
+			$theUser->addToInventory('Lasso');
+			break;
+		case '5':
+			cls();
+			print("Did you lasso that Site yet?\n\n\n");
+			break;
+		default:
+			print("This option is not set yet\n\n");
+			break;
+	   	}	
+   	}
 
 
 
@@ -326,7 +385,7 @@ function tryTerminusCommand($attemptedCommand, $roomThisCameFrom){ //1
 		} 	
 
 		switch ($userinput) {
-			//standard commands
+////// Standard commands
 			case 'look':
 			case 'l' :
 			   	cls();
@@ -355,7 +414,28 @@ function tryTerminusCommand($attemptedCommand, $roomThisCameFrom){ //1
 					."\nhelp or h - this is how you got here"
 					."\nTo move a direction you can type north, south, east or west or just n,s,e,w\n\n");
 					break;
+//////// Tools - can only use what you have
+	////////
+	// The lasso
+
+			case 'lasso':
+				if ( !$theUser->isItInInventory('Lasso') ){
+					print("\nYou don't have a lasso.\n\n");
+					break;	
+					}
+				print("\nLasso what?\n\n");
+				break;			
+			case 'lasso site':
+				if ( !$theUser->isItInInventory('Lasso') ){
+					print("\nYou don't have a lasso.\n\n");
+					break;	
+					}
+				print("\nLasso which site?\n\n");
+				break;
+
+//////// SAVE POINTS
 			case 'savepoint1':
+			case 'sp1':
 				$theUser->promoteLevel();
 				$theUser->promoteLevel();
 				$theUser->promoteLevel();
@@ -366,7 +446,7 @@ function tryTerminusCommand($attemptedCommand, $roomThisCameFrom){ //1
 				break;
 			case 'terminus':
 				break;
-				//ADMIN TOOLS				
+//////// ADMIN TOOLS				
 			case "print level":
 			case 'pl':
 				$theUser->printLevel();
@@ -452,9 +532,6 @@ function tryTerminusCommand($attemptedCommand, $roomThisCameFrom){ //1
 					case "look at wizard":
 						cls();
 						print("He looks just like what you imagined a wizard would look like.\n");
-						break;
-					case "authme":
-
 						break;
 				    default;
 				    	echo "that was not a known command, try again.  Type 'help' for help "."\n";
@@ -656,7 +733,7 @@ function tryTerminusCommand($attemptedCommand, $roomThisCameFrom){ //1
 				 		break;
 					case 'north':
 				 	case 'n':
-				   		print("You can not go that way");
+				   		print("NOT DEFINED YET");
 				 		break;
 				 	case 'west':
 				 	case 'w':
@@ -667,12 +744,20 @@ function tryTerminusCommand($attemptedCommand, $roomThisCameFrom){ //1
 		  			case 'east':
 		  			case 'e':
 				   		print("You can not go that way");
-				 		break;
-					
-			//Specific to this room    
-				// nothing here yet
+				 		break;					
+			// The Cowgirl	    
+					case 'talk to cowgirl':
+					case 'talk cowgirl':
+				    	cowgirl($theUser->getLevel());
+					    break;
+					case "look at cowgirl":
+					case "look cowgirl":
+						cls();
+						print("She has a 10 gallon hat, chaps and spurs, otherwise she looks just like what you imagined a cowgirl would look like.\n\n");
+						break;
 
-		 	    default;
+
+			 	    default;
 		 	    	echo "that was not a known command, try again.  Type 'help' for help "."\n";	    //	
 			     }
 			}
